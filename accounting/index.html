@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>记账页面</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .balance-card {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .balance-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .balance-amount {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-top: 5px;
+        }
+
+        .form-section {
+            padding: 30px;
+        }
+
+        .form-title {
+            font-size: 1.3rem;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 20px;
+        }
+
+        .form-row .form-group {
+            flex: 1;
+        }
+
+        .btn {
+            padding: 14px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            width: 100%;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .transactions-section {
+            padding: 30px;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .transaction-list {
+            list-style: none;
+        }
+
+        .transaction-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid #f0f0f0;
+            transition: background 0.2s;
+        }
+
+        .transaction-item:hover {
+            background: #f9f9f9;
+        }
+
+        .transaction-info {
+            flex: 1;
+        }
+
+        .transaction-description {
+            font-weight: 500;
+            color: #333;
+        }
+
+        .transaction-date {
+            font-size: 0.85rem;
+            color: #888;
+            margin-top: 4px;
+        }
+
+        .transaction-category {
+            display: inline-block;
+            padding: 3px 10px;
+            background: #f0f0f0;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            color: #666;
+            margin-top: 4px;
+        }
+
+        .transaction-amount {
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .transaction-amount.income {
+            color: #4caf50;
+        }
+
+        .transaction-amount.expense {
+            color: #f44336;
+        }
+
+        .delete-btn {
+            background: none;
+            border: none;
+            color: #f44336;
+            cursor: pointer;
+            padding: 5px 10px;
+            margin-left: 10px;
+            font-size: 1.2rem;
+            opacity: 0.6;
+            transition: opacity 0.2s;
+        }
+
+        .delete-btn:hover {
+            opacity: 1;
+        }
+
+        .tabs {
+            display: flex;
+            margin-bottom: 20px;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 12px;
+            text-align: center;
+            background: #f5f5f5;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background 0.3s;
+        }
+
+        .tab:first-child {
+            border-radius: 8px 0 0 8px;
+        }
+
+        .tab:last-child {
+            border-radius: 0 8px 8px 0;
+        }
+
+        .tab.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .summary-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .summary-card {
+            background: #f9f9f9;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .summary-card.income {
+            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+        }
+
+        .summary-card.expense {
+            background: linear-gradient(135deg, #ffebee 0%, #ffcdd2 100%);
+        }
+
+        .summary-label {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .summary-amount {
+            font-size: 1.8rem;
+            font-weight: bold;
+        }
+
+        .summary-card.income .summary-amount {
+            color: #4caf50;
+        }
+
+        .summary-card.expense .summary-amount {
+            color: #f44336;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #888;
+        }
+
+        @media (max-width: 600px) {
+            .form-row {
+                flex-direction: column;
+                gap: 0;
+            }
+
+            .header h1 {
+                font-size: 1.5rem;
+            }
+
+            .balance-amount {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>💰 我的账本</h1>
+            <div class="balance-card">
+                <div class="balance-label">当前余额</div>
+                <div class="balance-amount" id="balance">¥0.00</div>
+            </div>
+        </div>
+
+        <div class="form-section">
+            <h2 class="form-title">添加记录</h2>
+            <form id="transactionForm">
+                <div class="tabs">
+                    <button type="button" class="tab active" data-type="expense">支出</button>
+                    <button type="button" class="tab" data-type="income">收入</button>
+                </div>
+
+                <input type="hidden" id="transactionType" value="expense">
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="amount">金额</label>
+                        <input type="number" id="amount" placeholder="0.00" step="0.01" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="category">分类</label>
+                        <select id="category" required>
+                            <option value="">选择分类</option>
+                            <optgroup label="支出分类">
+                                <option value="餐饮">餐饮</option>
+                                <option value="交通">交通</option>
+                                <option value="购物">购物</option>
+                                <option value="娱乐">娱乐</option>
+                                <option value="居住">居住</option>
+                                <option value="医疗">医疗</option>
+                                <option value="教育">教育</option>
+                                <option value="其他">其他</option>
+                            </optgroup>
+                            <optgroup label="收入分类">
+                                <option value="工资">工资</option>
+                                <option value="奖金">奖金</option>
+                                <option value="投资">投资</option>
+                                <option value="兼职">兼职</option>
+                                <option value="其他">其他</option>
+                            </optgroup>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="description">描述</label>
+                    <input type="text" id="description" placeholder="输入描述...">
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="date">日期</label>
+                        <input type="date" id="date" required>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary">添加记录</button>
+            </form>
+        </div>
+
+        <div class="transactions-section">
+            <h2 class="form-title">收支明细</h2>
+            
+            <div class="summary-cards">
+                <div class="summary-card income">
+                    <div class="summary-label">总收入</div>
+                    <div class="summary-amount" id="totalIncome">¥0.00</div>
+                </div>
+                <div class="summary-card expense">
+                    <div class="summary-label">总支出</div>
+                    <div class="summary-amount" id="totalExpense">¥0.00</div>
+                </div>
+            </div>
+
+            <ul class="transaction-list" id="transactionList">
+                <li class="empty-state" id="emptyState">暂无记录，快添加第一笔账吧！</li>
+            </ul>
+        </div>
+    </div>
+
+    <script src="../dist/html2canvas.js"></script>
+    <script>
+        // 初始化数据
+        let transactions = JSON.parse(localStorage.getItem('transactions')) || [];
+
+        // 设置默认日期为今天
+        document.getElementById('date').valueAsDate = new Date();
+
+        // Tab 切换
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+                document.getElementById('transactionType').value = this.dataset.type;
+                
+                // 更新分类选项
+                updateCategories(this.dataset.type);
+            });
+        });
+
+        function updateCategories(type) {
+            const categorySelect = document.getElementById('category');
+            categorySelect.innerHTML = '<option value="">选择分类</option>';
+            
+            if (type === 'expense') {
+                const expenseCategories = ['餐饮', '交通', '购物', '娱乐', '居住', '医疗', '教育', '其他'];
+                expenseCategories.forEach(cat => {
+                    const option = document.createElement('option');
+                    option.value = cat;
+                    option.textContent = cat;
+                    categorySelect.appendChild(option);
+                });
+            } else {
+                const incomeCategories = ['工资', '奖金', '投资', '兼职', '其他'];
+                incomeCategories.forEach(cat => {
+                    const option = document.createElement('option');
+                    option.value = cat;
+                    option.textContent = cat;
+                    categorySelect.appendChild(option);
+                });
+            }
+        }
+
+        // 表单提交
+        document.getElementById('transactionForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const transaction = {
+                id: Date.now(),
+                type: document.getElementById('transactionType').value,
+                amount: parseFloat(document.getElementById('amount').value),
+                category: document.getElementById('category').value,
+                description: document.getElementById('description').value,
+                date: document.getElementById('date').value
+            };
+
+            transactions.unshift(transaction);
+            saveTransactions();
+            renderTransactions();
+            updateSummary();
+            
+            // 重置表单
+            this.reset();
+            document.getElementById('date').valueAsDate = new Date();
+        });
+
+        // 保存交易记录
+        function saveTransactions() {
+            localStorage.setItem('transactions', JSON.stringify(transactions));
+        }
+
+        // 渲染交易列表
+        function renderTransactions() {
+            const list = document.getElementById('transactionList');
+            const emptyState = document.getElementById('emptyState');
+
+            if (transactions.length === 0) {
+                list.innerHTML = '<li class="empty-state" id="emptyState">暂无记录，快添加第一笔账吧！</li>';
+                return;
+            }
+
+            list.innerHTML = transactions.map(transaction => `
+                <li class="transaction-item">
+                    <div class="transaction-info">
+                        <div class="transaction-description">${transaction.description || transaction.category}</div>
+                        <div class="transaction-date">${formatDate(transaction.date)}</div>
+                        <span class="transaction-category">${transaction.category}</span>
+                    </div>
+                    <div style="display: flex; align-items: center;">
+                        <span class="transaction-amount ${transaction.type}">
+                            ${transaction.type === 'income' ? '+' : '-'}¥${transaction.amount.toFixed(2)}
+                        </span>
+                        <button class="delete-btn" onclick="deleteTransaction(${transaction.id})">×</button>
+                    </div>
+                </li>
+            `).join('');
+        }
+
+        // 格式化日期
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            const now = new Date();
+            const diffDays = Math.floor((now - date) / (1000 * 60 * 60 * 24));
+
+            if (diffDays === 0) return '今天';
+            if (diffDays === 1) return '昨天';
+            if (diffDays < 7) return `${diffDays}天前`;
+            
+            return date.toLocaleDateString('zh-CN');
+        }
+
+        // 删除交易
+        function deleteTransaction(id) {
+            if (confirm('确定要删除这条记录吗？')) {
+                transactions = transactions.filter(t => t.id !== id);
+                saveTransactions();
+                renderTransactions();
+                updateSummary();
+            }
+        }
+
+        // 更新汇总
+        function updateSummary() {
+            const totalIncome = transactions
+                .filter(t => t.type === 'income')
+                .reduce((sum, t) => sum + t.amount, 0);
+
+            const totalExpense = transactions
+                .filter(t => t.type === 'expense')
+                .reduce((sum, t) => sum + t.amount, 0);
+
+            const balance = totalIncome - totalExpense;
+
+            document.getElementById('totalIncome').textContent = `¥${totalIncome.toFixed(2)}`;
+            document.getElementById('totalExpense').textContent = `¥${totalExpense.toFixed(2)}`;
+            document.getElementById('balance').textContent = `¥${balance.toFixed(2)}`;
+        }
+
+        // 初始化
+        renderTransactions();
+        updateSummary();
+    </script>
+</body>
+</html>
